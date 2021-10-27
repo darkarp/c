@@ -26,7 +26,7 @@ struct FLOAT_VEC char_to_float(struct CHAR_VEC arr_char)
     int i = 0;
     while (ptr != NULL)
     {
-        arr_float[i] = atof(ptr);
+        arr_float[i] = strtof(ptr, NULL);
         ptr = strtok(NULL, ",");
         i++;
     }
