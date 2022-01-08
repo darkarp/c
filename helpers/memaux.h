@@ -42,6 +42,17 @@ int pop(List *list, int index)
         // Shifting the values so we don't have holes
         for (int i = index; i < r_size - 1; i++)
             list->ptr[i] = list->ptr[i + 1];
+
+        // Making the List shorter if it falls bellow threshold. This can be removed if inneficient in certain applications
+        if (list->real_size * 2 < list->total_size)
+        {
+            void *new_ptr = realloc(list->ptr, r_size * sizeof(int)); // leveraging the fact that realloc with a NULL ptr is just a malloc
+            if (new_ptr)
+            {
+                list->ptr = (int *)new_ptr; // update ptr after realloc
+                list->total_size = r_size;  // updating total size
+            }
+        }
         return elem;
     }
     return -1; // Can't pop if it's empty
