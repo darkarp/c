@@ -1,13 +1,13 @@
 #include <stdlib.h>
 
-typedef struct List
+typedef struct IntList
 {
     int *ptr;
     size_t total_size;
     size_t real_size;
-} List;
+} IntList;
 
-int append(List *list, int value)
+int append(IntList *list, int value)
 {
     size_t t_size = list->total_size, r_size = list->real_size;
     size_t new_r_size = r_size + 1, new_t_size = (new_r_size + t_size) * 2;
@@ -31,7 +31,7 @@ int append(List *list, int value)
     return 0;
 }
 
-int pop(List *list, int index)
+int remove_index(IntList *list, int index)
 {
     size_t r_size = list->real_size;
     int elem = list->ptr[index];
@@ -56,4 +56,16 @@ int pop(List *list, int index)
         return elem;
     }
     return -1; // Can't pop if it's empty
+}
+int pop(IntList *list)
+{
+    if (list->real_size > 0)
+        return list->ptr[--list->real_size];
+    return -1; // Can't pop if it's empty
+}
+
+void push(IntList *list, int value)
+{
+    // No bound checking...
+    list->ptr[list->real_size++] = value; // adding the element to the List
 }
