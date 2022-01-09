@@ -1,6 +1,6 @@
 
 #include <stdio.h>
-#include "memaux_2.h"
+#include "memaux.h"
 
 void print_list(IntList *list)
 {
