@@ -1,71 +1,52 @@
-#include <stdlib.h>
 
-typedef struct IntList
+#include <stdio.h>
+#include "memaux_2.h"
+
+void print_list(IntList *list)
 {
-    int *ptr;
-    size_t total_size;
-    size_t real_size;
-} IntList;
-
-int append(IntList *list, int value)
-{
-    size_t t_size = list->total_size, r_size = list->real_size;
-    size_t new_r_size = r_size + 1, new_t_size = (new_r_size + t_size) * 2;
-
-    if (t_size <= new_r_size) // checking to see if we already have big enough size to add new element
+    for (int i = 0; i < (*list).real_size; i++)
     {
-        void *new_ptr = realloc(list->ptr, new_t_size * sizeof(int)); // leveraging the fact that realloc with a NULL ptr is just a malloc
-        if (new_ptr)
-        {
-            list->ptr = (int *)new_ptr;    // update ptr after realloc
-            list->total_size = new_t_size; // updating total size
-        }
-        else
-        {
-            return 1;
-        }
+        printf("%d\n", (*list).ptr[i]);
+    }
+}
+int main()
+{
+    // Declaring new List
+    IntList list = {
+        .ptr = NULL,
+        .real_size = 0,
+        .total_size = 0};
+
+    printf("Appending to the list:\n");
+
+    for (int i = 0; i < 10; i++)
+    {
+        append(&list, i); // Adding new value to List
+        printf("Real size: %d | Total size: %d\n", list.real_size, list.total_size);
     }
 
-    list->ptr[r_size] = value;    // adding the element to the List
-    list->real_size = new_r_size; // realsize increments by 1
-    return 0;
-}
+    // Printing the List
 
-int remove_index(IntList *list, int index)
-{
-    size_t r_size = list->real_size;
-    int elem = list->ptr[index];
-    if (r_size > 0)
+    printf("List after appending:\n");
+    print_list(&list);
+
+    printf("\\Removing elements at index %d and %d:\n", 0, 1);
+    printf("Old real size: %d\n", list.real_size);
+    printf("Removed element: %d\n", remove_index(&list, 0)); // Removing element from List at index
+    printf("Removed element: %d\n", remove_index(&list, 1)); // Removing element from List at index
+    printf("Popping an element (removing last element)\n");
+    pop(&list);
+
+    printf("New real size: %d\nList after removal&pop", list.real_size);
+    print_list(&list);
+    printf("\nRemoval memory management:\n");
+
+    int list_size = list.real_size;
+    for (int i = 0; i < list_size; i++)
     {
-        list->real_size -= 1;
-
-        // Shifting the values so we don't have holes
-        for (int i = index; i < r_size - 1; i++)
-            list->ptr[i] = list->ptr[i + 1];
-
-        // Making the List shorter if it falls bellow threshold. This can be removed if inneficient in certain applications
-        if (list->real_size * 2 < list->total_size)
-        {
-            void *new_ptr = realloc(list->ptr, r_size * sizeof(int)); // leveraging the fact that realloc with a NULL ptr is just a malloc
-            if (new_ptr)
-            {
-                list->ptr = (int *)new_ptr; // update ptr after realloc
-                list->total_size = r_size;  // updating total size
-            }
-        }
-        return elem;
+        remove_index(&list, i); // Removing value from List
+        printf("Real size: %d | Total size: %d\n", list.real_size, list.total_size);
     }
-    return -1; // Can't pop if it's empty
-}
-int pop(IntList *list)
-{
-    if (list->real_size > 0)
-        return list->ptr[--list->real_size];
-    return -1; // Can't pop if it's empty
-}
 
-void push(IntList *list, int value)
-{
-    // No bound checking...
-    list->ptr[list->real_size++] = value; // adding the element to the List
+    free(list.ptr);
 }
