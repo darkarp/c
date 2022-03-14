@@ -10,8 +10,6 @@ Structures
 */
 
 // This item can represent anything in the value field
-// The error field is true when an operation over the item
-// returns an error.
 typedef struct Item {
   void *value;
 } Item;
