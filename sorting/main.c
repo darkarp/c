@@ -4,12 +4,12 @@
 #define QUICK
 
 bool compare_ints(Item i1, Item i2, bool reversed) {
-  bool condition = *(int *)(i1).value > *(int *)(i2).value;
-  return reversed ? !condition : condition;
+  return !reversed ? *(int *)(i1).value > *(int *)(i2).value
+                   : *(int *)(i1).value < *(int *)(i2).value;
 }
 bool compare_chars(Item i1, Item i2, bool reversed) {
-  bool condition = *(char *)(i1).value > *(char *)(i2).value;
-  return reversed ? !condition : condition;
+  return !reversed ? *(char *)(i1).value > *(char *)(i2).value
+                   : *(char *)(i1).value < *(char *)(i2).value;
 }
 
 int main() {
@@ -38,11 +38,10 @@ int main() {
   print_array_char(char_list_obj.ptr, char_list_obj.real_size);
 
 // Perform quick_sort or bubble_sort
-#ifdef QUICKSORT
-  quicksort(int_list_obj.ptr, 0, int_list_obj.real_size - 1, compare_ints,
-            false);
-  quicksort(char_list_obj.ptr, 0, char_list_obj.real_size - 1, compare_chars,
-            false);
+#ifdef QUICK
+  quick_sort(int_list_obj.ptr, 0, int_list_obj.real_size, compare_ints, false);
+  quick_sort(char_list_obj.ptr, 0, char_list_obj.real_size, compare_chars,
+             false);
 #else
   bubble_sort(int_list_obj.ptr, int_list_obj.real_size, compare_ints, false);
   bubble_sort(char_list_obj.ptr, char_list_obj.real_size, compare_chars, false);
